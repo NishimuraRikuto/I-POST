@@ -1,0 +1,13 @@
+.DS_Store
+node_modules
+/dist
+/.vscode
+.env
+.env.*
+!.env.production
+
+/memo
+/tmp
+
+*.cache
+*.pem
