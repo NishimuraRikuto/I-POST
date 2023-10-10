@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 )
 from msg_manager import get_message, send_message
 import keyboard
+import datetime
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -200,6 +201,7 @@ class InboxWindow(QWidget):
         palette.setColor(QPalette.Window, QColor("#f2635f"))
         self.setPalette(palette)
         self.setWindowFlag(Qt.FramelessWindowHint)
+        self.update_message()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_B:  # スペースキーが押されたら
@@ -214,12 +216,17 @@ class InboxWindow(QWidget):
                 self.hide()
 
     def update_message(self):
-        data = get_message()
-        self.msg.setText(data[self.msg_number]["text"])
-        self.name.setText(data[self.msg_number]["senderName"])
-        date_format = "%Y-%m-%dT%H:%M:%S.%fZ"
-        # date = str(datetime.strptime(data[self.msg_number]["sendsAt"]["_seconds"], date_format))
-        # self.received_time.setText(date)
+        try:
+            data = get_message()
+            self.msg.setText(data[self.msg_number]["text"])
+            self.name.setText(data[self.msg_number]["senderName"])
+            ts = data[self.msg_number]["sendsAt"]["_seconds"]
+            dt = datetime.datetime.fromtimestamp(ts)
+            self.received_time.setText(str(dt))
+        except IndexError:
+            print("Reached first/last message.")
+        except  KeyError:
+            print("Reached first/last message.")
 
     def next_msg_button(self):
         if self.msg_number < len(self.data):
