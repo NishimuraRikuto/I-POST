@@ -1,16 +1,13 @@
 import io
 from PIL import Image
+import base64
 
 def img_to_binary(image_str):
-#バイナリにしたい画像を読み込み
-    tmpimg = Image.open(str(image_str))
-    with io.BytesIO() as output:
-        tmpimg.save(output,format="PNG")
-        contents = output.getvalue()#バイナリ取得
-        # print(contents)#表示
+    with open(image_str, 'rb') as image_file:# PNGファイルをバイナリモードで読み込む
+        image_data = image_file.read()
+        contents = base64.b64encode(image_data) # Base64エンコード
+        #print(contents)#表示
         return contents
-        # tmpimg2 = Image.open(io.BytesIO(contents))#バイナリから画像に変換
-        # tmpimg2.save('image_from_str.png')
 
 
 def binary_to_img(image_binary):
