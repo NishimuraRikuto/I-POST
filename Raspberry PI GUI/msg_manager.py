@@ -2,6 +2,7 @@ import json
 import requests
 from pic_to_mojiretsu import img_to_binary
 from picture_minimizer import compress
+import re
 
 I_POST_SERVER = "https://ipost-server-eh2trxntfa-an.a.run.app/"
 
@@ -21,7 +22,10 @@ def send_message(send_name):
     compress("I-POST_icon.PNG")
     compressed_img = "image-file-compressed.PNG"
     msg = img_to_binary(compressed_img)
-    mess = str(msg)
+    input_string = str(msg)
+    pattern = r"b'([A-Za-z0-9+/=]+)'"# 正規表現パターン
+    matches = re.findall(pattern, input_string)#マッチした部分の文字列をリストで取得
+    mess = matches[0]
     payload = {'imageUrl': mess, "senderId": "222", "senderName": send_name}
     r = requests.post(I_POST_SERVER + "/machine/messages", data=payload)
     return "Sent"
